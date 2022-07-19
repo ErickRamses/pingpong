@@ -2,6 +2,8 @@ const gameBoard = document.querySelector("#gameBoard");
 const ctx = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
 const resetBtn = document.querySelector("#resetBtn");
+const pausetBtn = document.querySelector("#pauseBtn");
+
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
 const boardBackground = "forestgreen";
@@ -11,7 +13,7 @@ const paddleBorder = "black";
 const ballColor = "yellow";
 const ballBorderColor = "black";
 const ballRadius = 12.5;
-const paddleSpeed = 50;
+let paddleSpeed = 5;
 let intervalID;
 let ballSpeed;
 let ballX = gameWidth / 2;
@@ -32,12 +34,20 @@ let paddle2 = {
     x: gameWidth - 25,
     y: gameHeight - 100
 };
-
+// this might be in the objetc
+let upping1 = false
+let downing1 = false
+let upping2 =false
+let downing2=false
+let paused=false
+//key donw, key up and next tick ==move
 window.addEventListener("keydown", changeDirection);
-window.addEventListener("key", changeDirection);
+window.addEventListener("keyup", changeDirectionstop);
 
 resetBtn.addEventListener("click", resetGame);
-
+pausetBtn.addEventListener("click",()=>{
+    paused ? paused=false :paused=true
+ })
 gameStart();
 
 function gameStart(){
@@ -46,13 +56,21 @@ function gameStart(){
 };
 function nextTick(){
     intervalID = setTimeout(() => {
+         
         clearBoard();
         drawPaddles();
-        moveBall();
-        drawBall(ballX, ballY);
+        
+        drawBall(ballX, ballY);  
+       
         checkCollision();
+        if(!paused){
+
+            moveBall();
+            movePaddles()
+        }
         nextTick();
-    }, 10)
+
+    }, 16.6)
 };
 function clearBoard(){
     ctx.fillStyle = boardBackground;
@@ -70,7 +88,8 @@ function drawPaddles(){
     ctx.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 };
 function createBall(){
-    ballSpeed = 1;
+    ballSpeed = 1.5;
+    paddleSpeed =5
     if(Math.round(Math.random()) == 1){
         ballXDirection =  1; 
     }
@@ -92,7 +111,12 @@ function moveBall(){
     ballY += (ballSpeed * ballYDirection);
 };
 function drawBall(ballX, ballY){
+    if(!paused){
     ctx.fillStyle = ballColor;
+    }else{
+        ctx.fillStyle = "white";
+
+    }
     ctx.strokeStyle = ballBorderColor;
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -124,6 +148,9 @@ function checkCollision(){
             ballX = (paddle1.x + paddle1.width) + ballRadius; // if ball gets stuck
             ballXDirection *= -1;
             ballSpeed += 1;
+            paddleSpeed +=.5
+           
+            
         }
     }
     if(ballX >= (paddle2.x - ballRadius)){
@@ -131,6 +158,8 @@ function checkCollision(){
             ballX = paddle2.x - ballRadius; // if ball gets stuck
             ballXDirection *= -1;
             ballSpeed += 1;
+          paddleSpeed +=.5
+
         }
     }
 };
@@ -145,31 +174,81 @@ function changeDirection(event){
 
     switch(keyPressed){
         case(paddle1Up):
-            if(paddle1.y > 0){
-                paddle1.y -= paddleSpeed;
-            }
+           // if(paddle1.y > 0){
+                upping1 =true                //
+           // }
             break;
-        case(paddle1Down):
-            if(paddle1.y < gameHeight - paddle1.height){
-                paddle1.y += paddleSpeed;
-            }
+            case(paddle1Down):
+           // if(paddle1.y < gameHeight - paddle1.height){
+                 downing1 =true
+                //
+           // }
             break;
-        case(paddle2Up):
-            if(paddle2.y > 0){
-                paddle2.y -= paddleSpeed;
-            }
+            case(paddle2Up):
+           // if(paddle2.y > 0){
+                 upping2 =true               //
+           // }
             break;
-        case(paddle2Down):
-            if(paddle2.y < gameHeight - paddle2.height){
-                paddle2.y += paddleSpeed;
-            }
+            case(paddle2Down):
+           // if(paddle2.y < gameHeight - paddle2.height){
+                 downing2=true               //
+           // }
             break;
     }
+};
+function changeDirectionstop(event){
+    //to do it better needs a keydown and up
+    const keyPressed = event.keyCode;
+    const paddle1Up = 87;
+    const paddle1Down = 83;
+    const paddle2Up = 38;
+    const paddle2Down = 40;
+    //code of ws & up down
+
+    switch(keyPressed){
+        case(paddle1Up):
+            //if(paddle1.y > 0){
+                 upping1 =false                //paddle1.y -= paddleSpeed;
+            //}
+            break;
+            case(paddle1Down):
+            //if(paddle1.y < gameHeight - paddle1.height){
+                 downing1 =false
+                //paddle1.y += paddleSpeed;
+           // }
+            break;
+            case(paddle2Up):
+            //if(paddle2.y > 0){
+                 upping2 =false             //paddle2.y -= paddleSpeed;
+            //}
+            break;
+            case(paddle2Down):
+            //if(paddle2.y < gameHeight - paddle2.height){
+                 downing2=false               //paddle2.y += paddleSpeed;
+            //}
+            break;
+    }
+};
+function movePaddles(){
+    if(upping1 && paddle1.y > 0){
+        paddle1.y -= paddleSpeed;
+    }
+    if(downing1 && paddle1.y < gameHeight - paddle1.height){
+        paddle1.y += paddleSpeed;
+    }
+    if(upping2 && paddle2.y > 0){
+        paddle2.y -= paddleSpeed;
+    }
+    if(downing2 && paddle2.y < gameHeight - paddle2.height){
+        paddle2.y += paddleSpeed;
+    }
+    //conditions in move
 };
 function updateScore(){
     scoreText.textContent = `${player1Score} : ${player2Score}`;
 };
 function resetGame(){
+    paused=false
     player1Score = 0;
     player2Score = 0;
     paddle1 = {
