@@ -3,6 +3,8 @@ const ctx = gameBoard.getContext("2d");
 const scoreText = document.querySelector("#scoreText");
 const resetBtn = document.querySelector("#resetBtn");
 const pausetBtn = document.querySelector("#pauseBtn");
+const AitBtn = document.querySelector("#AiBtn");
+
 
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
@@ -34,12 +36,15 @@ let paddle2 = {
     x: gameWidth - 25,
     y: gameHeight - 100
 };
+let AiAlive =true;
+let fastAi =10;
 // this might be in the objetc
 let upping1 = false
 let downing1 = false
 let upping2 =false
 let downing2=false
 let paused=false
+let count=0
 //key donw, key up and next tick ==move
 window.addEventListener("keydown", changeDirection);
 window.addEventListener("keyup", changeDirectionstop);
@@ -48,6 +53,13 @@ resetBtn.addEventListener("click", resetGame);
 pausetBtn.addEventListener("click",()=>{
     paused ? paused=false :paused=true
  })
+AitBtn.addEventListener("click",()=>{
+    resetGame()
+    fastAi =10;
+    AiAlive ? AiAlive=false :AiAlive=true
+
+})
+
 gameStart();
 
 function gameStart(){
@@ -64,14 +76,42 @@ function nextTick(){
        
         checkCollision();
         if(!paused){
+            if(AiAlive){
+                if(count>fastAi){
+                    ai()
+                    count=0
 
+                }else{
+                    count+=1
+                }
+
+            }
             moveBall();
             movePaddles()
+
         }
         nextTick();
 
     }, 16.6)
 };
+function ai(){
+    
+ if(Math.abs(paddle2.y+paddle2.height/2-ballY)<10){
+    upping2=false
+    downing2=false
+ }else{
+     
+     if(ballY<paddle2.y+paddle2.height/2){
+        upping2=true
+        downing2=false
+    
+     }
+     if(ballY>paddle2.y+paddle2.height/2){
+        downing2=true
+        upping2=false
+     }
+ }   
+}
 function clearBoard(){
     ctx.fillStyle = boardBackground;
     ctx.fillRect(0, 0, gameWidth, gameHeight);
@@ -84,6 +124,7 @@ function drawPaddles(){
     ctx.strokeRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
 
     ctx.fillStyle = paddle2Color;
+    if(AiAlive){ctx.fillStyle=`hsl(0, ${100}%, ${fastAi*2}%)`}
     ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
     ctx.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 };
@@ -133,12 +174,15 @@ function checkCollision(){
     }
     if(ballX <= 0){
         player2Score+=1;
+        fastAi +=5
         updateScore();
         createBall();
         return;
     }
     if(ballX >= gameWidth){
         player1Score+=1;
+        fastAi +=-5
+
         updateScore();
         createBall();
         return;
@@ -168,8 +212,10 @@ function changeDirection(event){
     const keyPressed = event.keyCode;
     const paddle1Up = 87;
     const paddle1Down = 83;
-    const paddle2Up = 38;
-    const paddle2Down = 40;
+    
+        const paddle2Up = 38;
+        const paddle2Down = 40;
+
     //code of ws & up down
 
     switch(keyPressed){
@@ -186,12 +232,17 @@ function changeDirection(event){
             break;
             case(paddle2Up):
            // if(paddle2.y > 0){
-                 upping2 =true               //
+            if(!AiAlive){
+                upping2 =true               //
+            }
            // }
             break;
             case(paddle2Down):
            // if(paddle2.y < gameHeight - paddle2.height){
-                 downing2=true               //
+            if(!AiAlive){
+
+                downing2=true               //
+            }
            // }
             break;
     }
