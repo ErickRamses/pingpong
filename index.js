@@ -37,7 +37,7 @@ let paddle2 = {
     y: gameHeight - 100
 };
 let AiAlive =true;
-let fastAi =40;
+let fastAi =30;
 // this might be in the objetc
 let upping1 = false
 let downing1 = false
@@ -124,7 +124,7 @@ function drawPaddles(){
     ctx.strokeRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
 
     ctx.fillStyle = paddle2Color;
-    if(AiAlive){ctx.fillStyle=`hsl(0, ${100}%, ${fastAi*2}%)`}
+    if(AiAlive){ctx.fillStyle=`hsl(0, ${100}%, ${fastAi*1}%)`}
     ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
     ctx.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 };
