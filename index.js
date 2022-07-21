@@ -37,7 +37,7 @@ let paddle2 = {
     y: gameHeight - 100
 };
 let AiAlive =true;
-let fastAi =10;
+let fastAi =40;
 // this might be in the objetc
 let upping1 = false
 let downing1 = false
