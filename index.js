@@ -129,7 +129,8 @@ function drawPaddles(){
     ctx.strokeRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
 };
 function createBall(){
-    ballSpeed = 1.5;
+    ballSpeed = 3;
+    
     paddleSpeed =5
     if(Math.round(Math.random()) == 1){
         ballXDirection =  1; 
