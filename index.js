@@ -55,7 +55,7 @@ pausetBtn.addEventListener("click",()=>{
  })
 AitBtn.addEventListener("click",()=>{
     AiAlive ? AiAlive=false :AiAlive=true
-     upping2 =falses
+     upping2 =false
  downing2=false
     resetGame()
     fastAi =30;
