@@ -8,6 +8,7 @@ const AitBtn = document.querySelector("#AiBtn");
 
 const gameWidth = gameBoard.width;
 const gameHeight = gameBoard.height;
+console.log(gameWidth)
 const boardBackground = "forestgreen";
 const paddle1Color = "lightblue";
 const paddle2Color = "red";
